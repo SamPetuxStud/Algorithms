@@ -1,0 +1,35 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include "tinyexpr.h"
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{
+    char uravnenie[10000]; double x = 2.5;
+    scanf("%s\n", uravnenie);
+    scanf("%lf", &x);
+
+    te_variable vars[] = { "x", &x }; int err = 0;
+    te_expr* expr = te_compile(uravnenie, vars, 1, &err);
+    
+    double delta = 0.00001, eps = 0.0001;
+    double f1, f, fProizv;
+
+    f = te_eval(expr);
+    do
+    {
+        x += delta;
+        f1 = te_eval(expr);
+
+        fProizv = (f1 - f) / delta;
+        x = x - f1 / fProizv;
+
+        f = f1;
+
+    } while (fabs(f1) >= eps);
+
+    printf("%lf\n", x);
+    return 0;
+}
